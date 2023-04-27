@@ -25,6 +25,8 @@ services:
     image: postgres:13.7-alpine
     # имя контейнера
     container_name: stats-db
+    ports:
+      - "5432:5432"
     # переменные окружения
     environment:
       - POSTGRES_DB=stats-db
