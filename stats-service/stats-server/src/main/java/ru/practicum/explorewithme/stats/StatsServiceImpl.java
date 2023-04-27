@@ -18,12 +18,11 @@ public class StatsServiceImpl implements StatsService {
     private final HitMapper hitMapper;
 
     @Override
-    public EndpointHit createHit(EndpointHit hitDto) {
+    public void createHit(EndpointHit hitDto) {
         Hit hit = hitMapper.toEntity(hitDto);
         if (hit != null) {
             hitRepository.save(hit);
-        }
-        throw new RuntimeException();
+        } else throw new RuntimeException();
     }
 
     @Override
