@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   stats-server:
-    build: stats-service/stats-server
+    build: ./stats-service/stats-server
     # имя образа
     image: stats-server
     # имя контейнера
@@ -32,7 +32,7 @@ services:
       - POSTGRES_PASSWORD=root
 
   ewm-service:
-    build: main-service
+    build: ./main-service
     # имя образа
     image: main-service
     # имя контейнера
