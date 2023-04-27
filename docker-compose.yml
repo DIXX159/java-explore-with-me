@@ -1,15 +1,70 @@
-version: '3.1'
+version: '3.8'
+
 services:
   stats-server:
+    build: ./server
+    # имя образа
+    image: stats-server
+    # имя контейнера
+    container_name: stats-server
+    # проброс портов
     ports:
       - "9090:9090"
+    # "зависит от",
+    depends_on:
+      - stats-db
+    # переменные окружения
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/stats-db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - SPRING_SERVER_URL=HTTP://ewm-service:9090
 
   stats-db:
-    image: postgres:14-alpine
+    image: postgres:13.7-alpine
+    # имя контейнера
+    container_name: stats-db
+    ports:
+      - "6541:5432"
+    # переменные окружения
+    environment:
+      - POSTGRES_DB=stats-db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
 
   ewm-service:
+    build: main-service
+    # имя образа
+    image: main-service
+    # имя контейнера
+    container_name: main-service
+    # проброс портов
     ports:
       - "8080:8080"
+    # "зависит от",
+    depends_on:
+      - stats-db
+      - stats-server
+    # переменные окружения
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm-db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - SPRING_SERVER_URL=HTTP://ewm-service:9090
+      - JAVA_OPTS=-Djdk.httpclient.HttpClient.log=errors,requests
 
   ewm-db:
-    image: postgres:14-alpine
+    image: postgres:13.7-alpine
+    # имя контейнера
+    container_name: ewm-db
+    ports:
+      - "6541:5432"
+    # переменные окружения
+    environment:
+      - POSTGRES_DB=ewm-db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
