@@ -43,7 +43,7 @@ services:
       - "8080:8080"
     # "зависит от",
     depends_on:
-      - stats-db
+      - ewm-db
       - stats-server
     # переменные окружения
     environment:
@@ -52,7 +52,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=root
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
-      - SPRING_SERVER_URL=HTTP://ewm-service:9090
+      - SERVICES_STATSSERVICE_URI=http://stats-server:9090
       - JAVA_OPTS=-Djdk.httpclient.HttpClient.log=errors,requests
 
   ewm-db:
