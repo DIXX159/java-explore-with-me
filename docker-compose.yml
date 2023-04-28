@@ -1,15 +1,51 @@
-version: '3.1'
+version: '3.8'
+
 services:
   stats-server:
+    build: ./stats-service/stats-server
+    # имя образа
+    image: stats-server
+    # имя контейнера
+    container_name: stats-server
+    # проброс портов
     ports:
       - "9090:9090"
+    # "зависит от",
+    depends_on:
+      - db
+    # переменные окружения
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/stats-db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
 
-  stats-db:
-    image: postgres:14-alpine
+  db:
+    image: postgres:13.7-alpine
+    # имя контейнера
+    container_name: stats-db
+    ports:
+      - "5432:5432"
+    # переменные окружения
+    environment:
+      - POSTGRES_DB=stats-db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
 
   ewm-service:
+    build: ./main-service
+    # имя образа
+    image: main-service
+    # имя контейнера
+    container_name: main-service
+    # проброс портов
     ports:
       - "8080:8080"
-
-  ewm-db:
-    image: postgres:14-alpine
+    # "зависит от",
+    depends_on:
+      - stats-server
+    # переменные окружения
+    environment:
+      - STATSSERVICE_SERVER_URL=http://stats-server:9090
+      - JAVA_OPTS=-Djdk.httpclient.HttpClient.log=errors,requests
