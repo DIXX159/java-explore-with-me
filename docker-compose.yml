@@ -12,21 +12,19 @@ services:
       - "9090:9090"
     # "зависит от",
     depends_on:
-      - db
+      - stats-db
     # переменные окружения
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/stats-db
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stats-db
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
 
-  db:
+  stats-db:
     image: postgres:13.7-alpine
     # имя контейнера
     container_name: stats-db
-    ports:
-      - "5432:5432"
     # переменные окружения
     environment:
       - POSTGRES_DB=stats-db
@@ -44,8 +42,20 @@ services:
       - "8080:8080"
     # "зависит от",
     depends_on:
+      - ewm-db
       - stats-server
     # переменные окружения
     environment:
-      - STATSSERVICE_SERVER_URL=http://stats-server:9090
-      - JAVA_OPTS=-Djdk.httpclient.HttpClient.log=errors,requests
+        - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm-db
+        - SPRING_DATASOURCE_USERNAME=root
+        - SPRING_DATASOURCE_PASSWORD=root
+        - SERVICES_STATSSERVICE_URI=http://stats-server:9090
+        - JAVA_OPTS=-Djdk.httpclient.HttpClient.log=errors,requests
+
+  ewm-db:
+      image: postgres:13.7-alpine
+      container_name: ewm-main-db
+      environment:
+        - POSTGRES_PASSWORD=root
+        - POSTGRES_USER=root
+        - POSTGRES_DB=ewm-db
