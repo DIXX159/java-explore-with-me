@@ -2,7 +2,9 @@ package ru.practicum.ewm.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import javax.validation.constraints.NotNull;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -10,6 +12,8 @@ import javax.validation.constraints.NotNull;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class NewCategoryDto {
-    @NotNull(message = "Отсутствует название")
+    @NotBlank(message = "Отсутствует название")
+    @Size(max = 50, message = "Максимум 50 символа")
+    @Size(min = 1, message = "Минимум 1 символ")
     String name;
 }

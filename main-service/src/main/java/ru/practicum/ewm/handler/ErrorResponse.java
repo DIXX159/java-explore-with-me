@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
-public class ErrorResponse extends Exception{
+public class ErrorResponse extends Exception {
     private final String message;
     private final String reason;
     private final HttpStatus status;

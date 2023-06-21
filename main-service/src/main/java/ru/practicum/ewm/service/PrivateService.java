@@ -16,11 +16,15 @@ public interface PrivateService {
 
     EventFullDto getEventByUser(Long userId, Long eventId) throws ValidationException;
 
-    EventFullDto updateEvent(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) throws ConflictException;
+    EventFullDto updateEvent(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) throws ConflictException, ValidationException;
 
     ParticipationRequestDto createRequest(Long userId, Long eventId) throws ConflictException;
 
     List<ParticipationRequestDto> getRequestsByUser(Long userId);
 
     ParticipationRequestDto updateRequest(Long userId, Long requestId);
+
+    List<ParticipationRequestDto> getRequestsOnEventByUser(Long userId, Long eventId);
+
+    EventRequestStatusUpdateResult updateStatusRequest(Long userId, Long eventId, EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest) throws ConflictException;
 }

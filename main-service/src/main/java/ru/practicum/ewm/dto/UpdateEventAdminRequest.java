@@ -13,9 +13,12 @@ import javax.validation.constraints.Size;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateEventAdminRequest {
-    @Size(max = 2000)
+    @Size(max = 2000, message = "Максимум 2000 символов")
+    @Size(min = 20, message = "Минимум 20 символов")
     String annotation;
     Long category;
+    @Size(max = 7000, message = "Максимум 7000 символов")
+    @Size(min = 20, message = "Минимум 20 символов")
     String description;
     String eventDate;
     Location location;
@@ -23,5 +26,7 @@ public class UpdateEventAdminRequest {
     Long participantLimit;
     Boolean requestModeration;
     StateAction stateAction;
+    @Size(max = 120, message = "Максимум 120 символов")
+    @Size(min = 3, message = "Минимум 30 символов")
     String title;
 }
