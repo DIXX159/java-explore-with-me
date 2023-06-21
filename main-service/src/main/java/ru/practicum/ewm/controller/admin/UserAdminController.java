@@ -6,11 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.dto.EventShortDto;
-import ru.practicum.ewm.dto.NewCategoryDto;
 import ru.practicum.ewm.dto.NewUserRequest;
-import ru.practicum.ewm.exception.ValidationException;
-import ru.practicum.ewm.model.CategoryDto;
 import ru.practicum.ewm.model.UserDto;
 import ru.practicum.ewm.service.AdminService;
 
@@ -34,7 +30,7 @@ public class UserAdminController {
     public UserDto createUser(@RequestBody @Valid NewUserRequest newUserRequest, HttpServletRequest request) throws Exception {
         log.debug("Получен {} запрос {} тело запроса: {}", request.getMethod(), request.getRequestURI(), newUserRequest);
         return adminService.createUser(newUserRequest);
-        }
+    }
 
     @DeleteMapping(value = "/admin/users/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -42,7 +38,7 @@ public class UserAdminController {
     public void deleteUser(@PathVariable Long userId,
                            HttpServletRequest request) {
         log.debug("Получен {} запрос {}", request.getMethod(), request.getRequestURI());
-            adminService.deleteUser(userId);
+        adminService.deleteUser(userId);
     }
 
     @GetMapping(value = "/admin/users")

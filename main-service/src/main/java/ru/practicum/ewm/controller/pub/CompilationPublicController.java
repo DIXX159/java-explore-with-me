@@ -6,7 +6,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.dto.CompilationDto;
-import ru.practicum.ewm.model.CompilationFullDto;
 import ru.practicum.ewm.service.PublicService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +22,7 @@ public class CompilationPublicController {
     private final PublicService publicService;
 
     @GetMapping(value = "/compilations")
-    public List<CompilationDto> getEventsByUser(@RequestParam(name = "pinned") Boolean pinned,
+    public List<CompilationDto> getEventsByUser(@RequestParam(name = "pinned", defaultValue = "false") Boolean pinned,
                                                 @RequestParam(name = "from", defaultValue = "0") Integer from,
                                                 @RequestParam(name = "size", defaultValue = "10") Integer size,
                                                 HttpServletRequest request) {
@@ -33,7 +32,7 @@ public class CompilationPublicController {
 
     @GetMapping(value = "/compilations/{compId}")
     public CompilationDto getEventByUser(@PathVariable Long compId,
-                                             HttpServletRequest request) {
+                                         HttpServletRequest request) {
         log.debug("Получен {} запрос {}", request.getMethod(), request.getRequestURI());
         return publicService.getCompilationsById(compId);
     }

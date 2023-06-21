@@ -2,7 +2,6 @@ package ru.practicum.ewm.model;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.ewm.dto.enums.State;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,7 +11,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name = "events")
+@Table(name = "events", uniqueConstraints = {
+        @UniqueConstraint(name = "uc_eventfullentity", columnNames = {"id"})
+})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EventFullEntity {
     @Id
@@ -21,8 +22,9 @@ public class EventFullEntity {
     Long id;
     @Column(name = "annotation")
     String annotation;
-    @Column(name = "category")
-    Long category;
+    @JoinColumn(name = "category")
+    @ManyToOne(fetch = FetchType.EAGER)
+    CategoryDto category;
     @Column(name = "confirmedrequests")
     Long confirmedRequests;
     @Column(name = "createdon")
@@ -31,10 +33,12 @@ public class EventFullEntity {
     String description;
     @Column(name = "eventdate")
     LocalDateTime eventDate;
-    @Column(name = "initiator")
-    Long initiator;
-    @Column(name = "location")
-    Long location;
+    @JoinColumn(name = "initiator")
+    @ManyToOne(fetch = FetchType.EAGER)
+    UserDto initiator;
+    @JoinColumn(name = "location")
+    @ManyToOne(fetch = FetchType.EAGER)
+    Location location;
     @Column(name = "paid")
     Boolean paid;
     @Column(name = "participantlimit")
@@ -44,7 +48,7 @@ public class EventFullEntity {
     @Column(name = "requestmoderation")
     Boolean requestModeration;
     @Column(name = "state")
-    State state;
+    String state;
     @Column(name = "title")
     String title;
     @Column(name = "views")

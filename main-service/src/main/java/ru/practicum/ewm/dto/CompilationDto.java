@@ -2,9 +2,7 @@ package ru.practicum.ewm.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.ewm.model.EventFullEntity;
 
-import javax.persistence.*;
 import java.util.List;
 
 @NoArgsConstructor

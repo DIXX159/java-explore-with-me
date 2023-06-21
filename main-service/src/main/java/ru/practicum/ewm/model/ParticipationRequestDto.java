@@ -2,11 +2,8 @@ package ru.practicum.ewm.model;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.ewm.dto.enums.State;
-import ru.practicum.ewm.dto.enums.Status;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor

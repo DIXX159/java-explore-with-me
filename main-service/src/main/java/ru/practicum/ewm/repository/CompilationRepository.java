@@ -5,23 +5,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.model.CompilationFullDto;
 import ru.practicum.ewm.model.EventFullEntity;
 
-import java.util.List;
-
-public interface CompilationRepository extends JpaRepository<CompilationFullDto, Long> {
-
-    @Transactional
-    @Modifying
-    @Query("update CompilationFullDto " +
-            "set events = :events, " +
-            "pinned = :pinned, " +
-            "title = :title " +
-            "where id = :id")
-    void updateCompilation(@Param("id")Long compId, @Param("events")List<EventFullEntity> events, @Param("pinned")Boolean pinned, @Param("title")String title);
+public interface CompilationRepository extends JpaRepository<CompilationFullDto, Long>, QuerydslPredicateExecutor<CompilationFullDto> {
 
     CompilationFullDto findCompilationFullDtoById(Long compId);
 

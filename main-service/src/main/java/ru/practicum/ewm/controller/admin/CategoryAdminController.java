@@ -3,7 +3,6 @@ package ru.practicum.ewm.controller.admin;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.dto.NewCategoryDto;
@@ -23,7 +22,6 @@ import javax.validation.Valid;
 public class CategoryAdminController {
 
     private final AdminService adminService;
-    //private final StatsClient statsClient;
 
     @PostMapping(value = "/admin/categories")
     @ResponseStatus(HttpStatus.CREATED)
@@ -31,19 +29,19 @@ public class CategoryAdminController {
     public CategoryDto createCategory(@RequestBody @Valid NewCategoryDto newCategoryDto, HttpServletRequest request) throws Exception {
         log.debug("Получен {} запрос {} тело запроса: {}", request.getMethod(), request.getRequestURI(), newCategoryDto);
         return adminService.createCategory(newCategoryDto);
-        }
+    }
 
     @DeleteMapping(value = "/admin/categories/{catId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void deleteCategory(@PathVariable Long catId,
-                                             HttpServletRequest request) {
+                               HttpServletRequest request) throws ConflictException {
         log.debug("Получен {} запрос {}", request.getMethod(), request.getRequestURI());
-            adminService.deleteCategory(catId);
+        adminService.deleteCategory(catId);
     }
 
     @PatchMapping(value = "/admin/categories/{catId}")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public CategoryDto createCategory(@PathVariable Long catId, @RequestBody @Valid NewCategoryDto newCategoryDto, HttpServletRequest request) throws Exception {
         log.debug("Получен {} запрос {} тело запроса: {}", request.getMethod(), request.getRequestURI(), newCategoryDto);

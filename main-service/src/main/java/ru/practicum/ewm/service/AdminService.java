@@ -11,9 +11,9 @@ import java.util.List;
 
 public interface AdminService {
 
-    CategoryDto createCategory(NewCategoryDto newCategoryDto) throws Exception, ConflictException;
+    CategoryDto createCategory(NewCategoryDto newCategoryDto) throws Exception;
 
-    void deleteCategory(Long catId);
+    void deleteCategory(Long catId) throws ConflictException;
 
     CategoryDto updateCategory(Long catId, NewCategoryDto newCategoryDto) throws ConflictException;
 
@@ -28,4 +28,8 @@ public interface AdminService {
     CompilationDto updateCompilation(Long compId, UpdateCompilationRequest updateCompilationRequest);
 
     List<UserDto> getUsers(List<Long> ids, PageRequest pageRequest);
+
+    List<EventFullDto> getEvents(List<Long> users, List<String> states, List<Long> categories, String rangeStart, String rangeEnd, PageRequest of);
+
+    EventFullDto updateEvent(Long eventId, UpdateEventAdminRequest updateEventAdminRequest) throws ConflictException, ValidationException;
 }

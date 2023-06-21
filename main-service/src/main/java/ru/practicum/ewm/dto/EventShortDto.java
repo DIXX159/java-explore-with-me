@@ -2,10 +2,7 @@ package ru.practicum.ewm.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.ewm.dto.enums.Status;
 import ru.practicum.ewm.model.CategoryDto;
-
-import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor

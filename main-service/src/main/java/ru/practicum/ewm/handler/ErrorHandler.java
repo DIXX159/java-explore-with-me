@@ -54,6 +54,17 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Map<String, String> constraintViolationExceptionError(final ConstraintViolationException e) {
+        log.info("409 {}", e.getMessage());
+        return Map.of("message", e.getMessage(),
+                "reason", "Integrity constraint has been violated.",
+                "status", HttpStatus.CONFLICT.name(),
+                "timestamp", LocalDateTime.now().toString()
+        );
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> notFoundError(final NotFoundException e) {
         log.info("404 {}", e.getMessage());
@@ -70,8 +81,10 @@ public class ErrorHandler {
         log.info("400 {}", e.getMessage());
         String[] errorString = e.getMessage().split(";");
         String shortErrorString = errorString[errorString.length - 2];
+        String shortDescriptionString = errorString[errorString.length - 1];
         String error = shortErrorString.substring(shortErrorString.indexOf('[') + 1, shortErrorString.indexOf(']'));
-        return Map.of("message", "Field: "+ error + ". Error: must not be blank. Value: null",
+        String description = shortDescriptionString.substring(shortDescriptionString.indexOf('[') + 1, shortDescriptionString.indexOf(']'));
+        return Map.of("message", "Field: " + error + " .Error: " + description,
                 "reason", "Incorrectly made request.",
                 "status", HttpStatus.BAD_REQUEST.name(),
                 "timestamp", LocalDateTime.now().toString()
