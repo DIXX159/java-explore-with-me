@@ -1,4 +1,4 @@
 FROM amazoncorretto:11-alpine-jdk
 VOLUME /tmp
-COPY target/*.jar app.jar
-ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar -Dserver.port=9090 /app.jar"]
+COPY target/*.jar main-server.jar
+ENTRYPOINT ["java","-jar","/main-server.jar"]
