@@ -31,7 +31,7 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
 
-  ewm-service:
+  main-service:
     build: ./main-service
     # имя образа
     image: main-service
