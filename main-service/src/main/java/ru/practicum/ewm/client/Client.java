@@ -8,10 +8,10 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Map;
 
-public class BaseClient {
+public class Client {
     protected final RestTemplate rest;
 
-    public BaseClient(RestTemplate rest) {
+    public Client(RestTemplate rest) {
         this.rest = rest;
     }
 

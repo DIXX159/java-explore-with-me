@@ -6,7 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.EndpointHit;
-import ru.practicum.ewm.client.StatClient;
+import ru.practicum.ewm.client.StatsClient;
 import ru.practicum.ewm.dto.EventFullDto;
 import ru.practicum.ewm.dto.EventShortDto;
 import ru.practicum.ewm.exception.ValidationException;
@@ -26,7 +26,7 @@ import java.util.List;
 public class EventPublicController {
 
     private final PublicService publicService;
-    private final StatClient statClient;
+    private final StatsClient statsClient;
 
     @GetMapping(value = "/events")
     public List<EventShortDto> getFilteredEvents(@RequestParam(name = "text", required = false) String text,
@@ -42,7 +42,7 @@ public class EventPublicController {
         log.debug("Получен {} запрос {}", request.getMethod(), request.getRequestURI());
         List<EventShortDto> events = publicService.getFilteredEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, PageRequest.of(from, size));
         for (EventShortDto eventShortDto : events) {
-            statClient.createHit(new EndpointHit(null, "EWM Main", request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
+            statsClient.createHit(new EndpointHit(null, "EWM Main", request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
         }
         return events;
     }
@@ -52,7 +52,7 @@ public class EventPublicController {
                                      HttpServletRequest request) throws ValidationException {
         log.debug("Получен {} запрос {}", request.getMethod(), request.getRequestURI());
         EventFullDto event = publicService.getEventById(id);
-        statClient.createHit(new EndpointHit(null, "EWM Main", request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
+        statsClient.createHit(new EndpointHit(null, "EWM Main", request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
         return event;
     }
 }
