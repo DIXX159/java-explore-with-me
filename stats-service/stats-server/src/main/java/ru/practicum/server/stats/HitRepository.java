@@ -16,7 +16,7 @@ public interface HitRepository extends JpaRepository<Hit, Integer> {
             "h.timestamp between ?2 and ?3 " +
             "group by h.app, h.uri " +
             "order by count(h.ip) desc")
-    List<Stats> findAllByUriContainsAndTimestampBetween(List<String> uris, LocalDateTime start, LocalDateTime end);
+    List<Stats> findAllByUriContainsAndTimestampBetween(String[] uris, LocalDateTime start, LocalDateTime end);
 
     @Query("select new ru.practicum.server.stats.model.Stats(h.app, h.uri, count(h.ip)) from Hit as h " +
             "where " +

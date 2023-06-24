@@ -41,9 +41,7 @@ public class EventPublicController {
                                                  HttpServletRequest request) throws ValidationException {
         log.debug("Получен {} запрос {}", request.getMethod(), request.getRequestURI());
         List<EventShortDto> events = publicService.getFilteredEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, PageRequest.of(from, size));
-        for (EventShortDto eventShortDto : events) {
-            statsServiceClient.createHit(new EndpointHit(null, "EWM Main", request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
-        }
+        statsServiceClient.createHit(new EndpointHit(null, "EWM Main", request.getRequestURI(), request.getRemoteAddr(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
         return events;
     }
 
