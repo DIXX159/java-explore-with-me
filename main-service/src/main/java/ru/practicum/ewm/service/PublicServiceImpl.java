@@ -7,7 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import ru.practicum.ewm.client.StatsClient;
+import ru.practicum.ewm.client.StatsServiceClient;
 import ru.practicum.ewm.dto.CompilationDto;
 import ru.practicum.ewm.dto.EventFullDto;
 import ru.practicum.ewm.dto.EventShortDto;
@@ -29,7 +29,7 @@ public class PublicServiceImpl implements PublicService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final CompilationRepository compilationRepository;
-    private final StatsClient statsClient;
+    private final StatsServiceClient statClient;
     private final ModelMapper modelMapper;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -88,7 +88,7 @@ public class PublicServiceImpl implements PublicService {
                 }
             }
             for (EventFullEntity eventFullEntity : eventFullEntities) {
-                ResponseEntity<Object> stats = statsClient.getStats(LocalDateTime.now().minusYears(1).format(formatter), LocalDateTime.now().format(formatter), new String[]{"/events/" + eventFullEntity.getId()}, true);
+                ResponseEntity<Object> stats = statClient.getStats(LocalDateTime.now().minusYears(1).format(formatter), LocalDateTime.now().format(formatter), new String[]{"/events/" + eventFullEntity.getId()}, true);
                 String[] body = Objects.requireNonNull(stats.getBody()).toString().split("hits");
                 if (!Objects.equals(body[0], "[]")) {
                     eventFullEntity.setViews(Long.valueOf(body[1].substring(body[1].indexOf('=') + 1, body[1].indexOf('}'))));
@@ -108,7 +108,7 @@ public class PublicServiceImpl implements PublicService {
         EventFullEntity eventFullEntity = eventRepository.findEventFullEntityByIdAndStateLike(id, State.PUBLISHED.name()).orElseThrow(() -> new NotFoundException("Event with id=" + id + " was not found",
                 "The required object was not found.",
                 HttpStatus.NOT_FOUND));
-        ResponseEntity<Object> stats = statsClient.getStats(LocalDateTime.now().minusYears(1).format(formatter), LocalDateTime.now().format(formatter), new String[]{"/events/" + id}, true);
+        ResponseEntity<Object> stats = statClient.getStats(LocalDateTime.now().minusYears(1).format(formatter), LocalDateTime.now().format(formatter), new String[]{"/events/" + id}, true);
         String[] body = Objects.requireNonNull(stats.getBody()).toString().split("hits");
         if (!Objects.equals(body[0], "[]")) {
             eventFullEntity.setViews(Long.valueOf(body[1].substring(body[1].indexOf('=') + 1, body[1].indexOf('}'))));

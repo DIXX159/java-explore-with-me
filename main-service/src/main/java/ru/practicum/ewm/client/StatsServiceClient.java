@@ -3,6 +3,7 @@ package ru.practicum.ewm.client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
@@ -12,11 +13,12 @@ import ru.practicum.dto.EndpointHit;
 import java.util.Map;
 
 @Service
-public class StatsClient extends Client {
+@PropertySource(value = "classpath:")
+public class StatsServiceClient extends Client {
     private static final String API_PREFIX = "";
 
     @Autowired
-    public StatsClient(@Value("http://localhost:9090") String serverUrl, RestTemplateBuilder builder) {
+    public StatsServiceClient(@Value("http://localhost:9090") String serverUrl, RestTemplateBuilder builder) {
         super(
                 builder
                         .uriTemplateHandler(new DefaultUriBuilderFactory(String.format("%s%s", serverUrl, API_PREFIX)))
