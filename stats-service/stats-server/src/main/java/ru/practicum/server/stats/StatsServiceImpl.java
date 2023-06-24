@@ -31,7 +31,7 @@ public class StatsServiceImpl implements StatsService {
     @Override
     public List<Stats> getStats(String start, String end, String[] uris, Boolean unique) throws ValidationException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        if (LocalDateTime.parse(start, formatter).isBefore(LocalDateTime.now()) || (LocalDateTime.parse(end, formatter).isAfter(LocalDateTime.now()))){
+        if (LocalDateTime.parse(start, formatter).isBefore(LocalDateTime.now()) || (LocalDateTime.parse(end, formatter).isAfter(LocalDateTime.now()))) {
             if (!unique) {
                 if (uris != null) {
                     return hitRepository.findAllByUriContainsAndTimestampBetween(uris, LocalDateTime.parse(start, formatter), LocalDateTime.parse(end, formatter));
@@ -45,6 +45,7 @@ public class StatsServiceImpl implements StatsService {
                     return hitRepository.findUniqueStatsByTimestampBetween(LocalDateTime.parse(start, formatter), LocalDateTime.parse(end, formatter));
                 }
             }
-        }throw new ValidationException("Invalid date of start or end");
+        }
+        throw new ValidationException("Invalid date of start or end");
     }
 }
