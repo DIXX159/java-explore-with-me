@@ -2,6 +2,7 @@ package ru.practicum.server.stats;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.server.exception.ValidationException;
 import ru.practicum.server.stats.model.Hit;
 import ru.practicum.server.stats.model.HitMapper;
 import ru.practicum.server.stats.model.Stats;
@@ -28,20 +29,22 @@ public class StatsServiceImpl implements StatsService {
     }
 
     @Override
-    public List<Stats> getStats(String start, String end, String[] uris, Boolean unique) {
+    public List<Stats> getStats(String start, String end, String[] uris, Boolean unique) throws ValidationException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        if (!unique) {
-            if (uris != null) {
-                return hitRepository.findAllByUriContainsAndTimestampBetween(uris, LocalDateTime.parse(start, formatter), LocalDateTime.parse(end, formatter));
+        if (LocalDateTime.parse(start, formatter).isBefore(LocalDateTime.now()) || (LocalDateTime.parse(end, formatter).isAfter(LocalDateTime.now()))){
+            if (!unique) {
+                if (uris != null) {
+                    return hitRepository.findAllByUriContainsAndTimestampBetween(uris, LocalDateTime.parse(start, formatter), LocalDateTime.parse(end, formatter));
+                } else {
+                    return hitRepository.findAllByTimestampBetween(LocalDateTime.parse(start, formatter), LocalDateTime.parse(end, formatter));
+                }
             } else {
-                return hitRepository.findAllByTimestampBetween(LocalDateTime.parse(start, formatter), LocalDateTime.parse(end, formatter));
+                if (uris != null) {
+                    return hitRepository.findUniqueStatsByUriContainsAndTimestampBetween(uris, LocalDateTime.parse(start, formatter), LocalDateTime.parse(end, formatter));
+                } else {
+                    return hitRepository.findUniqueStatsByTimestampBetween(LocalDateTime.parse(start, formatter), LocalDateTime.parse(end, formatter));
+                }
             }
-        } else {
-            if (uris != null) {
-                return hitRepository.findUniqueStatsByUriContainsAndTimestampBetween(uris, LocalDateTime.parse(start, formatter), LocalDateTime.parse(end, formatter));
-            } else {
-                return hitRepository.findUniqueStatsByTimestampBetween(LocalDateTime.parse(start, formatter), LocalDateTime.parse(end, formatter));
-            }
-        }
+        }throw new ValidationException("Invalid date of start or end");
     }
 }
