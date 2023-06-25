@@ -1,6 +1,7 @@
 package ru.practicum.ewm.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PublicServiceImpl implements PublicService {
 
@@ -36,17 +38,20 @@ public class PublicServiceImpl implements PublicService {
 
     @Override
     public List<CompilationDto> getCompilations(Boolean pinned, PageRequest pageRequest) {
+        log.info("Public: get Compilations by pinned {}", pinned);
         Page<CompilationFullDto> compilationFullDtoList = compilationRepository.findCompilationFullDtoList(pinned, pageRequest);
         return modelMapper.mapToCompilationDto(compilationFullDtoList);
     }
 
     @Override
     public CompilationDto getCompilationsById(Long compId) {
+        log.info("Public: get Compilations by id {}", compId);
         return modelMapper.toCompilationDto(compilationRepository.findCompilationFullDtoById(compId));
     }
 
     @Override
     public List<CategoryDto> getCategories(PageRequest pageRequest) throws ValidationException {
+        log.info("Public: get Categories");
         try {
             return categoryRepository.findAll(pageRequest).toList();
         } catch (Exception e) {
@@ -59,6 +64,7 @@ public class PublicServiceImpl implements PublicService {
 
     @Override
     public CategoryDto getCategory(Long catId) {
+        log.info("Public: get Category by id {}", catId);
         return categoryRepository.findById(catId).orElseThrow(() -> new NotFoundException("Category with id=" + catId + " was not found",
                 "The required object was not found.",
                 HttpStatus.NOT_FOUND));
@@ -66,6 +72,7 @@ public class PublicServiceImpl implements PublicService {
 
     @Override
     public List<EventShortDto> getFilteredEvents(String text, List<Long> categories, Boolean paid, String rangeStart, String rangeEnd, Boolean onlyAvailable, String sort, PageRequest pageRequest) throws ValidationException {
+        log.info("Public: get filtered Events");
         Page<EventFullEntity> eventFullEntities;
         if (Objects.equals(text, "0")) {
             throw new ValidationException("Event must be published",
@@ -105,6 +112,7 @@ public class PublicServiceImpl implements PublicService {
 
     @Override
     public EventFullDto getEventById(Long id) {
+        log.info("Public: get Event by id {}", id);
         EventFullEntity eventFullEntity = eventRepository.findEventFullEntityByIdAndStateLike(id, State.PUBLISHED.name()).orElseThrow(() -> new NotFoundException("Event with id=" + id + " was not found",
                 "The required object was not found.",
                 HttpStatus.NOT_FOUND));

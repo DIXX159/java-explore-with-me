@@ -17,7 +17,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping
+@RequestMapping(path = "/admin/events")
 @RequiredArgsConstructor
 @Slf4j
 @Validated
@@ -25,7 +25,7 @@ public class EventAdminController {
 
     private final AdminService adminService;
 
-    @GetMapping(value = "/admin/events")
+    @GetMapping
     public List<EventFullDto> getEvents(@RequestParam(name = "users", required = false) List<Long> users,
                                         @RequestParam(name = "states", required = false) List<String> states,
                                         @RequestParam(name = "categories", required = false) List<Long> categories,
@@ -38,7 +38,7 @@ public class EventAdminController {
         return adminService.getEvents(users, states, categories, rangeStart, rangeEnd, PageRequest.of(from, size));
     }
 
-    @PatchMapping(value = "/admin/events/{eventId}")
+    @PatchMapping(value = "/{eventId}")
     public EventFullDto updateEvent(@PathVariable Long eventId,
                                     @RequestBody @Valid UpdateEventAdminRequest updateEventAdminRequest,
                                     HttpServletRequest request) throws ConflictException, ValidationException {

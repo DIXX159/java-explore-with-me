@@ -13,7 +13,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping
+@RequestMapping(path = "/users/{userId}/requests")
 @RequiredArgsConstructor
 @Slf4j
 @Validated
@@ -22,7 +22,7 @@ public class RequestPrivateController {
     private final PrivateService privateService;
 
 
-    @PostMapping(value = "/users/{userId}/requests")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public ParticipationRequestDto createEvent(@PathVariable Long userId,
@@ -32,14 +32,14 @@ public class RequestPrivateController {
         return privateService.createRequest(userId, eventId);
     }
 
-    @GetMapping(value = "/users/{userId}/requests")
+    @GetMapping
     public List<ParticipationRequestDto> getEventsByUser(@PathVariable Long userId,
                                                          HttpServletRequest request) {
         log.debug("Получен {} запрос: {}", request.getMethod(), request.getRequestURI());
         return privateService.getRequestsByUser(userId);
     }
 
-    @PatchMapping(value = "/users/{userId}/requests/{requestId}/cancel")
+    @PatchMapping(value = "/{requestId}/cancel")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public ParticipationRequestDto updateEvent(@PathVariable Long userId,

@@ -16,7 +16,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping
+@RequestMapping(path = "/admin/users")
 @RequiredArgsConstructor
 @Slf4j
 @Validated
@@ -24,7 +24,7 @@ public class UserAdminController {
 
     private final AdminService adminService;
 
-    @PostMapping(value = "/admin/users")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public UserDto createUser(@RequestBody @Valid NewUserRequest newUserRequest, HttpServletRequest request) throws Exception {
@@ -32,7 +32,7 @@ public class UserAdminController {
         return adminService.createUser(newUserRequest);
     }
 
-    @DeleteMapping(value = "/admin/users/{userId}")
+    @DeleteMapping(value = "/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void deleteUser(@PathVariable Long userId,
@@ -41,7 +41,7 @@ public class UserAdminController {
         adminService.deleteUser(userId);
     }
 
-    @GetMapping(value = "/admin/users")
+    @GetMapping
     public List<UserDto> getEventsByUser(@RequestParam(required = false) List<Long> ids,
                                          @RequestParam(name = "from", defaultValue = "0") Integer from,
                                          @RequestParam(name = "size", defaultValue = "10") Integer size,

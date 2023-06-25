@@ -85,4 +85,6 @@ public interface EventRepository extends JpaRepository<EventFullEntity, Long> {
             "where e.category.id = :id "
     )
     List<EventFullEntity> findEventFullEntityByCategory(@Param("id") Long id);
+
+    List<EventFullEntity> findAllByIdIn(@Param("ids")List<Long> ids);
 }

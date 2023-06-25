@@ -14,7 +14,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping
+@RequestMapping(path = "/categories")
 @RequiredArgsConstructor
 @Slf4j
 @Validated
@@ -22,7 +22,7 @@ public class CategoryPublicController {
 
     private final PublicService publicService;
 
-    @GetMapping(value = "/categories")
+    @GetMapping
     public List<CategoryDto> getEventsByUser(@RequestParam(name = "from", defaultValue = "0") Integer from,
                                              @RequestParam(name = "size", defaultValue = "10") Integer size,
                                              HttpServletRequest request) throws ValidationException {
@@ -30,7 +30,7 @@ public class CategoryPublicController {
         return publicService.getCategories(PageRequest.of(from, size));
     }
 
-    @GetMapping(value = "/categories/{catId}")
+    @GetMapping(value = "/{catId}")
     public CategoryDto getEventByUser(@PathVariable Long catId,
                                       HttpServletRequest request) throws ValidationException {
         log.debug("Получен {} запрос {}", request.getMethod(), request.getRequestURI());

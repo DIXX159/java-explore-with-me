@@ -13,7 +13,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping
+@RequestMapping(path = "/compilations")
 @RequiredArgsConstructor
 @Slf4j
 @Validated
@@ -21,7 +21,7 @@ public class CompilationPublicController {
 
     private final PublicService publicService;
 
-    @GetMapping(value = "/compilations")
+    @GetMapping
     public List<CompilationDto> getEventsByUser(@RequestParam(name = "pinned", defaultValue = "false") Boolean pinned,
                                                 @RequestParam(name = "from", defaultValue = "0") Integer from,
                                                 @RequestParam(name = "size", defaultValue = "10") Integer size,
@@ -30,7 +30,7 @@ public class CompilationPublicController {
         return publicService.getCompilations(pinned, PageRequest.of(from, size));
     }
 
-    @GetMapping(value = "/compilations/{compId}")
+    @GetMapping(value = "/{compId}")
     public CompilationDto getEventByUser(@PathVariable Long compId,
                                          HttpServletRequest request) {
         log.debug("Получен {} запрос {}", request.getMethod(), request.getRequestURI());

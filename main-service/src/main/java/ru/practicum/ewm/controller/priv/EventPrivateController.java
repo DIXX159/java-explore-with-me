@@ -18,7 +18,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping
+@RequestMapping(path = "/users/{userId}/events")
 @RequiredArgsConstructor
 @Slf4j
 @Validated
@@ -26,7 +26,7 @@ public class EventPrivateController {
 
     private final PrivateService privateService;
 
-    @PostMapping(value = "/users/{userId}/events")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public EventFullDto createEvent(@PathVariable Long userId, @RequestBody @Valid NewEventDto newEventDto, HttpServletRequest request) throws Exception {
@@ -34,7 +34,7 @@ public class EventPrivateController {
         return privateService.createEvent(userId, newEventDto);
     }
 
-    @GetMapping(value = "/users/{userId}/events")
+    @GetMapping
     public List<EventShortDto> getEventsByUser(@PathVariable Long userId,
                                                @RequestParam(name = "from", defaultValue = "0") Integer from,
                                                @RequestParam(name = "size", defaultValue = "10") Integer size,
@@ -43,7 +43,7 @@ public class EventPrivateController {
         return privateService.getEventsByUser(userId, PageRequest.of(from, size));
     }
 
-    @GetMapping(value = "/users/{userId}/events/{eventId}")
+    @GetMapping(value = "/{eventId}")
     public EventFullDto getEventByUser(@PathVariable Long userId,
                                        @PathVariable Long eventId,
                                        HttpServletRequest request) throws ValidationException {
@@ -51,7 +51,7 @@ public class EventPrivateController {
         return privateService.getEventByUser(userId, eventId);
     }
 
-    @PatchMapping(value = "/users/{userId}/events/{eventId}")
+    @PatchMapping(value = "/{eventId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public EventFullDto updateEvent(@PathVariable Long userId,
@@ -62,7 +62,7 @@ public class EventPrivateController {
         return privateService.updateEvent(userId, eventId, updateEventUserRequest);
     }
 
-    @GetMapping(value = "/users/{userId}/events/{eventId}/requests")
+    @GetMapping(value = "/{eventId}/requests")
     public List<ParticipationRequestDto> getRequestsOnEventByUser(@PathVariable Long userId,
                                                                   @PathVariable Long eventId,
                                                                   HttpServletRequest request) {
@@ -70,7 +70,7 @@ public class EventPrivateController {
         return privateService.getRequestsOnEventByUser(userId, eventId);
     }
 
-    @PatchMapping(value = "/users/{userId}/events/{eventId}/requests")
+    @PatchMapping(value = "/{eventId}/requests")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public EventRequestStatusUpdateResult updateRequest(@PathVariable Long userId,

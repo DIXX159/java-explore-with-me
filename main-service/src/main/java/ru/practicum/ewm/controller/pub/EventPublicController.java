@@ -19,7 +19,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping
+@RequestMapping(path = "/events")
 @RequiredArgsConstructor
 @Slf4j
 @Validated
@@ -28,7 +28,7 @@ public class EventPublicController {
     private final PublicService publicService;
     private final StatsServiceClient statsServiceClient;
 
-    @GetMapping(value = "/events")
+    @GetMapping
     public List<EventShortDto> getFilteredEvents(@RequestParam(name = "text", required = false) String text,
                                                  @RequestParam(name = "categories", required = false) List<Long> categories,
                                                  @RequestParam(name = "paid", defaultValue = "false") Boolean paid,
@@ -45,7 +45,7 @@ public class EventPublicController {
         return events;
     }
 
-    @GetMapping(value = "/events/{id}")
+    @GetMapping(value = "/{id}")
     public EventFullDto getEventById(@PathVariable Long id,
                                      HttpServletRequest request) throws ValidationException {
         log.debug("Получен {} запрос {}", request.getMethod(), request.getRequestURI());

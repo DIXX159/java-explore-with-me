@@ -29,4 +29,5 @@ public interface ParticipationRequestRepository extends JpaRepository<Participat
 
     List<ParticipationRequestDto> getParticipationRequestDtosByEvent(@Param("event") Long eventId);
 
+    List<ParticipationRequestDto> findAllByIdIn(@Param("ids") List<Long> ids);
 }

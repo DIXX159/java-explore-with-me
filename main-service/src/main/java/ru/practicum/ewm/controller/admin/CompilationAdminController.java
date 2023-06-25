@@ -16,7 +16,7 @@ import javax.validation.Valid;
 
 
 @RestController
-@RequestMapping
+@RequestMapping(path = "/admin/compilations")
 @RequiredArgsConstructor
 @Slf4j
 @Validated
@@ -24,7 +24,7 @@ public class CompilationAdminController {
 
     private final AdminService adminService;
 
-    @PostMapping(value = "/admin/compilations")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public CompilationDto createCompilation(@RequestBody @Valid NewCompilationDto newCompilationDto, HttpServletRequest request) throws ConflictException {
@@ -32,7 +32,7 @@ public class CompilationAdminController {
         return adminService.createCompilation(newCompilationDto);
     }
 
-    @DeleteMapping(value = "/admin/compilations/{compId}")
+    @DeleteMapping(value = "/{compId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void deleteCompilation(@PathVariable Long compId,
@@ -41,7 +41,7 @@ public class CompilationAdminController {
         adminService.deleteCompilation(compId);
     }
 
-    @PatchMapping(value = "/admin/compilations/{compId}")
+    @PatchMapping(value = "/{compId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public CompilationDto updateCompilation(@PathVariable Long compId, @RequestBody @Valid UpdateCompilationRequest updateCompilationRequest, HttpServletRequest request) {

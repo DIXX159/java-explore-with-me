@@ -15,15 +15,15 @@ import javax.validation.Valid;
 
 
 @RestController
-@RequestMapping
 @RequiredArgsConstructor
 @Slf4j
 @Validated
+@RequestMapping(path = "/admin/categories")
 public class CategoryAdminController {
 
     private final AdminService adminService;
 
-    @PostMapping(value = "/admin/categories")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public CategoryDto createCategory(@RequestBody @Valid NewCategoryDto newCategoryDto, HttpServletRequest request) throws Exception {
@@ -31,7 +31,7 @@ public class CategoryAdminController {
         return adminService.createCategory(newCategoryDto);
     }
 
-    @DeleteMapping(value = "/admin/categories/{catId}")
+    @DeleteMapping(value = "/{catId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void deleteCategory(@PathVariable Long catId,
@@ -40,7 +40,7 @@ public class CategoryAdminController {
         adminService.deleteCategory(catId);
     }
 
-    @PatchMapping(value = "/admin/categories/{catId}")
+    @PatchMapping(value = "/{catId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public CategoryDto createCategory(@PathVariable Long catId, @RequestBody @Valid NewCategoryDto newCategoryDto, HttpServletRequest request) throws Exception {
