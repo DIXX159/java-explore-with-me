@@ -31,6 +31,7 @@ public class AdminServiceImpl implements AdminService {
     private final LocationRepository locationRepository;
     private final ModelMapper modelMapper;
     private final CompilationRepository compilationRepository;
+    private final CommentRepository commentRepository;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -230,5 +231,21 @@ public class AdminServiceImpl implements AdminService {
         locationRepository.save(event.getLocation());
         eventRepository.save(event);
         return modelMapper.toEvent(eventRepository.save(event));
+    }
+
+    @Override
+    public Comment updateAdminComment(Long commentId, NewCommentStatusDto newCommentStatusDto) throws ConflictException {
+        log.info("Admin: update Comment {} by Admin", commentId);
+        Comment commentDto = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundException("Comment with id=" + commentId + " was not found",
+                        "The required object was not found.",
+                        HttpStatus.NOT_FOUND));
+        if (Objects.equals(commentDto.getState(), State.PENDING.name())) {
+            commentDto.setState(newCommentStatusDto.getState().name());
+            commentRepository.updateAdminComment(commentId, newCommentStatusDto.getState().name());
+            return commentRepository.save(commentDto);
+        } else throw new ConflictException("Event state is not PENDING",
+                "For the requested operation the conditions are not met.",
+                HttpStatus.CONFLICT);
     }
 }

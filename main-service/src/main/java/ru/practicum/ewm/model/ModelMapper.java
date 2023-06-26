@@ -184,4 +184,14 @@ public class ModelMapper {
         }
         return eventFullDtoList;
     }
+
+    public Comment toComment(Long userId, Long eventId, NewCommentDto newCommentDto) {
+        return new Comment(
+                null,
+                newCommentDto.getComment(),
+                userId,
+                State.PENDING.name(),
+                eventId
+        );
+    }
 }

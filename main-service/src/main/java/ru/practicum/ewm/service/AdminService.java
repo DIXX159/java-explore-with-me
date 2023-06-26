@@ -5,6 +5,7 @@ import ru.practicum.ewm.dto.*;
 import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.ValidationException;
 import ru.practicum.ewm.model.Category;
+import ru.practicum.ewm.model.Comment;
 import ru.practicum.ewm.model.User;
 
 import java.util.List;
@@ -32,4 +33,6 @@ public interface AdminService {
     List<EventFullDto> getEvents(List<Long> users, List<String> states, List<Long> categories, String rangeStart, String rangeEnd, PageRequest of);
 
     EventFullDto updateEvent(Long eventId, UpdateEventAdminRequest updateEventAdminRequest) throws ConflictException, ValidationException;
+
+    Comment updateAdminComment(Long comId, NewCommentStatusDto newCommentStatusDto) throws ConflictException;
 }
