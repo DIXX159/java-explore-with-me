@@ -16,197 +16,171 @@ public class ModelMapper {
 
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
-    private final CompilationRepository compilationRepository;
     private final EventRepository eventRepository;
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public ModelMapper(CategoryRepository categoryRepository, UserRepository userRepository, CompilationRepository compilationRepository, EventRepository eventRepository) {
+    public ModelMapper(CategoryRepository categoryRepository, UserRepository userRepository, EventRepository eventRepository) {
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
-        this.compilationRepository = compilationRepository;
         this.eventRepository = eventRepository;
     }
 
-    public CategoryDto toCategoryDto(NewCategoryDto newCategoryDto) {
+    public Category toCategory(NewCategoryDto newCategoryDto) {
         if (newCategoryDto == null) {
             return null;
         }
-        CategoryDto categoryDto = new CategoryDto();
-        categoryDto.setName(newCategoryDto.getName());
-        return categoryDto;
+        Category category = new Category();
+        category.setName(newCategoryDto.getName());
+        return category;
     }
 
-    public UserDto toUserDto(NewUserRequest newUserRequest) {
+    public User toUser(NewUserRequest newUserRequest) {
         if (newUserRequest == null) {
             return null;
         }
-        UserDto userDto = new UserDto();
-        userDto.setEmail(newUserRequest.getEmail());
-        userDto.setName(newUserRequest.getName());
-        return userDto;
+        User user = new User();
+        user.setEmail(newUserRequest.getEmail());
+        user.setName(newUserRequest.getName());
+        return user;
     }
 
-    public UserShortDto toUserShortDto(Optional<UserDto> userDto) {
+    public UserShortDto toUserShortDto(Optional<User> userDto) {
         return new UserShortDto(
                 userDto.get().getId(),
                 userDto.get().getName()
         );
     }
 
-    public EventFullEntity toEventFullDto(Long userId, NewEventDto newEventDto) {
+    public Event toEvent(Long userId, NewEventDto newEventDto) {
         if (newEventDto == null) {
             return null;
         }
-        EventFullEntity eventFullEntity = new EventFullEntity();
-        eventFullEntity.setAnnotation(newEventDto.getAnnotation());
-        eventFullEntity.setCategory(categoryRepository.findById(newEventDto.getCategory()).get());
-        eventFullEntity.setConfirmedRequests(0L);
-        eventFullEntity.setCreatedOn(LocalDateTime.now());
-        eventFullEntity.setDescription(newEventDto.getDescription());
-        eventFullEntity.setEventDate(LocalDateTime.parse(newEventDto.getEventDate(), formatter));
-        eventFullEntity.setInitiator(userRepository.getReferenceById(userId));
-        eventFullEntity.setLocation(newEventDto.getLocation());
+        Event event = new Event();
+        event.setAnnotation(newEventDto.getAnnotation());
+        event.setCategory(categoryRepository.findById(newEventDto.getCategory()).get());
+        event.setConfirmedRequests(0L);
+        event.setCreatedOn(LocalDateTime.now());
+        event.setDescription(newEventDto.getDescription());
+        event.setEventDate(LocalDateTime.parse(newEventDto.getEventDate(), formatter));
+        event.setInitiator(userRepository.getReferenceById(userId));
+        event.setLocation(newEventDto.getLocation());
         if (newEventDto.getPaid() != null) {
-            eventFullEntity.setPaid(newEventDto.getPaid());
+            event.setPaid(newEventDto.getPaid());
         } else {
-            eventFullEntity.setPaid(false);
+            event.setPaid(false);
         }
         if (newEventDto.getPaid() != null) {
-            eventFullEntity.setParticipantLimit(newEventDto.getParticipantLimit());
+            event.setParticipantLimit(newEventDto.getParticipantLimit());
         } else {
-            eventFullEntity.setParticipantLimit(0L);
+            event.setParticipantLimit(0L);
         }
-        eventFullEntity.setPublishedOn(LocalDateTime.now());
+        event.setPublishedOn(LocalDateTime.now());
         if (newEventDto.getPaid() != null) {
-            eventFullEntity.setRequestModeration(newEventDto.getRequestModeration());
+            event.setRequestModeration(newEventDto.getRequestModeration());
         } else {
-            eventFullEntity.setRequestModeration(true);
+            event.setRequestModeration(true);
         }
-        eventFullEntity.setState(State.PENDING.name());
-        eventFullEntity.setTitle(newEventDto.getTitle());
-        eventFullEntity.setViews(0L);
-        return eventFullEntity;
+        event.setState(State.PENDING.name());
+        event.setTitle(newEventDto.getTitle());
+        event.setViews(0L);
+        return event;
     }
 
-    public EventFullDto toEventFullDto(EventFullEntity eventFullEntity) {
+    public EventFullDto toEvent(Event event) {
         return new EventFullDto(
-                eventFullEntity.getId(),
-                eventFullEntity.getAnnotation(),
-                categoryRepository.findById(eventFullEntity.getCategory().getId()).get(),
-                eventFullEntity.getConfirmedRequests(),
-                eventFullEntity.getCreatedOn().format(formatter),
-                eventFullEntity.getDescription(),
-                eventFullEntity.getEventDate().format(formatter),
-                toUserShortDto(userRepository.findById(eventFullEntity.getInitiator().getId())),
-                eventFullEntity.getLocation(),
-                eventFullEntity.getPaid(),
-                eventFullEntity.getParticipantLimit(),
-                eventFullEntity.getPublishedOn().format(formatter),
-                eventFullEntity.getRequestModeration(),
-                State.from(eventFullEntity.getState()).get(),
-                eventFullEntity.getTitle(),
-                eventFullEntity.getViews()
+                event.getId(),
+                event.getAnnotation(),
+                categoryRepository.findById(event.getCategory().getId()).get(),
+                event.getConfirmedRequests(),
+                event.getCreatedOn().format(formatter),
+                event.getDescription(),
+                event.getEventDate().format(formatter),
+                toUserShortDto(userRepository.findById(event.getInitiator().getId())),
+                event.getLocation(),
+                event.getPaid(),
+                event.getParticipantLimit(),
+                event.getPublishedOn().format(formatter),
+                event.getRequestModeration(),
+                State.from(event.getState()).get(),
+                event.getTitle(),
+                event.getViews()
         );
     }
 
-    public EventShortDto toEventShortDto(EventFullEntity eventFullEntity) {
+    public EventShortDto toEventShortDto(Event event) {
 
         return new EventShortDto(
-                eventFullEntity.getAnnotation(),
-                eventFullEntity.getCategory(),
-                eventFullEntity.getConfirmedRequests(),
-                eventFullEntity.getEventDate().format(formatter),
-                eventFullEntity.getId(),
-                toUserShortDto(userRepository.findById(eventFullEntity.getInitiator().getId())),
-                eventFullEntity.getPaid(),
-                eventFullEntity.getTitle(),
-                eventFullEntity.getViews()
+                event.getAnnotation(),
+                event.getCategory(),
+                event.getConfirmedRequests(),
+                event.getEventDate().format(formatter),
+                event.getId(),
+                toUserShortDto(userRepository.findById(event.getInitiator().getId())),
+                event.getPaid(),
+                event.getTitle(),
+                event.getViews()
         );
     }
 
-    public List<EventShortDto> mapToEventShortDto(Iterable<EventFullEntity> eventFullEntities) {
+    public List<EventShortDto> mapToEventShortDto(Iterable<Event> eventFullEntities) {
         List<EventShortDto> eventShortDtoList = new ArrayList<>();
-        for (EventFullEntity eventFullEntity : eventFullEntities) {
-            eventShortDtoList.add(toEventShortDto(eventFullEntity));
+        for (Event event : eventFullEntities) {
+            eventShortDtoList.add(toEventShortDto(event));
         }
         return eventShortDtoList;
     }
 
-    public CompilationDto toCompilationDto(CompilationFullDto compilationFullDto) {
-        if (compilationFullDto == null) {
+    public CompilationDto toCompilationDto(Compilation compilation) {
+        if (compilation == null) {
             return null;
         }
         List<EventShortDto> eventShortDtoList = new ArrayList<>();
         CompilationDto compilationDto = new CompilationDto();
-        for (EventFullEntity event : compilationFullDto.getEvents()) {
+        for (Event event : compilation.getEvents()) {
 
             eventShortDtoList.add(toEventShortDto(eventRepository.findEventFullEntityById(event.getId())));
         }
-        compilationDto.setId(compilationFullDto.getId());
+        compilationDto.setId(compilation.getId());
         compilationDto.setEvents(eventShortDtoList);
-        compilationDto.setPinned(compilationFullDto.getPinned());
-        compilationDto.setTitle(compilationFullDto.getTitle());
+        compilationDto.setPinned(compilation.getPinned());
+        compilationDto.setTitle(compilation.getTitle());
         return compilationDto;
     }
 
-    public CompilationFullDto toCompilationFullDto(NewCompilationDto newCompilationDto) {
+    public Compilation toCompilationFullDto(NewCompilationDto newCompilationDto) {
         if (newCompilationDto == null) {
             return null;
         }
-        List<EventFullEntity> eventFullEntityList = new ArrayList<>();
-        CompilationFullDto compilationFullDto = new CompilationFullDto();
+        List<Event> eventList = new ArrayList<>();
+        Compilation compilation = new Compilation();
         if (newCompilationDto.getEvents() != null) {
             for (Long event : newCompilationDto.getEvents()) {
-                eventFullEntityList.add(eventRepository.findEventFullEntityById(event));
+                eventList.add(eventRepository.findEventFullEntityById(event));
             }
         }
-        compilationFullDto.setEvents(eventFullEntityList);
+        compilation.setEvents(eventList);
         if (newCompilationDto.getPinned() != null) {
-            compilationFullDto.setPinned(newCompilationDto.getPinned());
+            compilation.setPinned(newCompilationDto.getPinned());
         } else {
-            compilationFullDto.setPinned(false);
+            compilation.setPinned(false);
         }
-        compilationFullDto.setTitle(newCompilationDto.getTitle());
-        return compilationFullDto;
+        compilation.setTitle(newCompilationDto.getTitle());
+        return compilation;
     }
 
-    public CompilationFullDto toCompilationFullDto(Long compId, UpdateCompilationRequest updateCompilationRequest) {
-        if (updateCompilationRequest == null) {
-            return null;
-        }
-        CompilationFullDto compilationFullDto = new CompilationFullDto();
-        if (updateCompilationRequest.getEvents() != null) {
-            List<EventFullEntity> eventFullEntityList = new ArrayList<>();
-            for (Long event : updateCompilationRequest.getEvents()) {
-                eventFullEntityList.add(eventRepository.findEventFullEntityById(event));
-            }
-            compilationFullDto.setEvents(eventFullEntityList);
-        } else {
-            compilationFullDto.setEvents(compilationRepository.findCompilationFullDtoById(compId).getEvents());
-        }
-        if (updateCompilationRequest.getPinned() != null) {
-            compilationFullDto.setPinned(updateCompilationRequest.getPinned());
-        } else {
-            compilationFullDto.setPinned(false);
-        }
-        compilationFullDto.setTitle(updateCompilationRequest.getTitle());
-        compilationFullDto.setId(compId);
-        return compilationFullDto;
-    }
-
-    public List<CompilationDto> mapToCompilationDto(Iterable<CompilationFullDto> compilationFullDtoList) {
+    public List<CompilationDto> mapToCompilationDto(Iterable<Compilation> compilationFullDtoList) {
         List<CompilationDto> compilationDtoList = new ArrayList<>();
-        for (CompilationFullDto compilationFullDto : compilationFullDtoList) {
-            compilationDtoList.add(toCompilationDto(compilationFullDto));
+        for (Compilation compilation : compilationFullDtoList) {
+            compilationDtoList.add(toCompilationDto(compilation));
         }
         return compilationDtoList;
     }
 
-    public List<EventFullDto> mapToEventFullDto(Iterable<EventFullEntity> eventFullEntityList) {
+    public List<EventFullDto> mapToEventFullDto(Iterable<Event> eventFullEntityList) {
         List<EventFullDto> eventFullDtoList = new ArrayList<>();
-        for (EventFullEntity eventFullEntity : eventFullEntityList) {
-            eventFullDtoList.add(toEventFullDto(eventFullEntity));
+        for (Event event : eventFullEntityList) {
+            eventFullDtoList.add(toEvent(event));
         }
         return eventFullDtoList;
     }

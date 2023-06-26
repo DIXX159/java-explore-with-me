@@ -10,15 +10,19 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name = "users")
+@Table(name = "participation_request")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserDto {
+public class ParticipationRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     Long id;
-    @Column(name = "email")
-    String email;
-    @Column(name = "name")
-    String name;
+    @Column(name = "created")
+    String created;
+    @Column(name = "event")
+    Long event;
+    @Column(name = "requester")
+    Long requester;
+    @Column(name = "status")
+    String status;
 }

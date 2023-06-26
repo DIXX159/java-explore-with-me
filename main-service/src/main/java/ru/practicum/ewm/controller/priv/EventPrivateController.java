@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.dto.*;
 import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.ValidationException;
-import ru.practicum.ewm.model.ParticipationRequestDto;
+import ru.practicum.ewm.model.ParticipationRequest;
 import ru.practicum.ewm.service.PrivateService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -63,9 +63,9 @@ public class EventPrivateController {
     }
 
     @GetMapping(value = "/{eventId}/requests")
-    public List<ParticipationRequestDto> getRequestsOnEventByUser(@PathVariable Long userId,
-                                                                  @PathVariable Long eventId,
-                                                                  HttpServletRequest request) {
+    public List<ParticipationRequest> getRequestsOnEventByUser(@PathVariable Long userId,
+                                                               @PathVariable Long eventId,
+                                                               HttpServletRequest request) {
         log.debug("Получен {} запрос {}", request.getMethod(), request.getRequestURI());
         return privateService.getRequestsOnEventByUser(userId, eventId);
     }

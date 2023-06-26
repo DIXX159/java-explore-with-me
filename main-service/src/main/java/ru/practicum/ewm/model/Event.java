@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
         @UniqueConstraint(name = "uc_eventfullentity", columnNames = {"id"})
 })
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class EventFullEntity {
+public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -24,7 +24,7 @@ public class EventFullEntity {
     String annotation;
     @JoinColumn(name = "category")
     @ManyToOne(fetch = FetchType.EAGER)
-    CategoryDto category;
+    Category category;
     @Column(name = "confirmedrequests")
     Long confirmedRequests;
     @Column(name = "createdon")
@@ -35,7 +35,7 @@ public class EventFullEntity {
     LocalDateTime eventDate;
     @JoinColumn(name = "initiator")
     @ManyToOne(fetch = FetchType.EAGER)
-    UserDto initiator;
+    User initiator;
     @JoinColumn(name = "location")
     @ManyToOne(fetch = FetchType.EAGER)
     Location location;

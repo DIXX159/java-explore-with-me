@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.dto.NewUserRequest;
-import ru.practicum.ewm.model.UserDto;
+import ru.practicum.ewm.model.User;
 import ru.practicum.ewm.service.AdminService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +27,7 @@ public class UserAdminController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public UserDto createUser(@RequestBody @Valid NewUserRequest newUserRequest, HttpServletRequest request) throws Exception {
+    public User createUser(@RequestBody @Valid NewUserRequest newUserRequest, HttpServletRequest request) throws Exception {
         log.debug("Получен {} запрос {} тело запроса: {}", request.getMethod(), request.getRequestURI(), newUserRequest);
         return adminService.createUser(newUserRequest);
     }
@@ -42,10 +42,10 @@ public class UserAdminController {
     }
 
     @GetMapping
-    public List<UserDto> getEventsByUser(@RequestParam(required = false) List<Long> ids,
-                                         @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                         @RequestParam(name = "size", defaultValue = "10") Integer size,
-                                         HttpServletRequest request) {
+    public List<User> getEventsByUser(@RequestParam(required = false) List<Long> ids,
+                                      @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                      @RequestParam(name = "size", defaultValue = "10") Integer size,
+                                      HttpServletRequest request) {
         log.debug("Получен {} запрос {}", request.getMethod(), request.getRequestURI());
         return adminService.getUsers(ids, PageRequest.of(from, size));
     }

@@ -4,20 +4,20 @@ import org.springframework.data.domain.PageRequest;
 import ru.practicum.ewm.dto.*;
 import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.ValidationException;
-import ru.practicum.ewm.model.CategoryDto;
-import ru.practicum.ewm.model.UserDto;
+import ru.practicum.ewm.model.Category;
+import ru.practicum.ewm.model.User;
 
 import java.util.List;
 
 public interface AdminService {
 
-    CategoryDto createCategory(NewCategoryDto newCategoryDto) throws Exception;
+    Category createCategory(NewCategoryDto newCategoryDto) throws Exception;
 
     void deleteCategory(Long catId) throws ConflictException;
 
-    CategoryDto updateCategory(Long catId, NewCategoryDto newCategoryDto) throws ConflictException;
+    Category updateCategory(Long catId, NewCategoryDto newCategoryDto) throws ConflictException;
 
-    UserDto createUser(NewUserRequest newUserRequest) throws ConflictException, ValidationException;
+    User createUser(NewUserRequest newUserRequest) throws ConflictException, ValidationException;
 
     void deleteUser(Long userId);
 
@@ -27,7 +27,7 @@ public interface AdminService {
 
     CompilationDto updateCompilation(Long compId, UpdateCompilationRequest updateCompilationRequest);
 
-    List<UserDto> getUsers(List<Long> ids, PageRequest pageRequest);
+    List<User> getUsers(List<Long> ids, PageRequest pageRequest);
 
     List<EventFullDto> getEvents(List<Long> users, List<String> states, List<Long> categories, String rangeStart, String rangeEnd, PageRequest of);
 

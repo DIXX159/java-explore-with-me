@@ -35,12 +35,12 @@ public class AdminServiceImpl implements AdminService {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
-    public CategoryDto createCategory(NewCategoryDto newCategoryDto) throws ValidationException, ConflictException {
+    public Category createCategory(NewCategoryDto newCategoryDto) throws ValidationException, ConflictException {
         log.info("Admin: create new Category");
         if (newCategoryDto.getName() != null) {
             try {
-                CategoryDto categoryDto = modelMapper.toCategoryDto(newCategoryDto);
-                return categoryRepository.save(categoryDto);
+                Category category = modelMapper.toCategory(newCategoryDto);
+                return categoryRepository.save(category);
             } catch (ConstraintViolationException e) {
                 throw new ConflictException(e.getConstraintName(),
                         "Integrity constraint has been violated.",
@@ -70,17 +70,17 @@ public class AdminServiceImpl implements AdminService {
 
 
     @Override
-    public CategoryDto updateCategory(Long catId, NewCategoryDto newCategoryDto) throws ConflictException {
+    public Category updateCategory(Long catId, NewCategoryDto newCategoryDto) throws ConflictException {
         log.info("Admin: update Category by id {}", catId);
         categoryRepository.findById(catId)
                 .orElseThrow(() -> new NotFoundException("Category with id=" + catId + " was not found",
                         "The required object was not found.",
                         HttpStatus.NOT_FOUND));
         try {
-            CategoryDto categoryDto = modelMapper.toCategoryDto(newCategoryDto);
-            categoryDto.setId(catId);
-            categoryRepository.updateCategory(catId, categoryDto.getName());
-            return categoryRepository.save(categoryDto);
+            Category category = modelMapper.toCategory(newCategoryDto);
+            category.setId(catId);
+            categoryRepository.updateCategory(catId, category.getName());
+            return categoryRepository.save(category);
         } catch (ConstraintViolationException e) {
             throw new ConflictException(e.getConstraintName(),
                     "Integrity constraint has been violated.",
@@ -90,11 +90,11 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public UserDto createUser(NewUserRequest newUserRequest) throws ConflictException {
+    public User createUser(NewUserRequest newUserRequest) throws ConflictException {
         log.info("Admin: create new User");
         try {
-            UserDto userDto = modelMapper.toUserDto(newUserRequest);
-            return userRepository.save(userDto);
+            User user = modelMapper.toUser(newUserRequest);
+            return userRepository.save(user);
         } catch (ConstraintViolationException e) {
             throw new ConflictException(e.getConstraintName(),
                     "Integrity constraint has been violated.",
@@ -115,7 +115,7 @@ public class AdminServiceImpl implements AdminService {
 
 
     @Override
-    public List<UserDto> getUsers(List<Long> ids, PageRequest pageRequest) {
+    public List<User> getUsers(List<Long> ids, PageRequest pageRequest) {
         log.info("Admin: get Users by ids");
         if (ids != null) {
             return userRepository.getUserDtoListByIdIsIn(ids, pageRequest).toList();
@@ -150,12 +150,12 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public CompilationDto updateCompilation(Long compId, UpdateCompilationRequest updateCompilationRequest) {
         log.info("Admin: update Compilation by id {}", compId);
-        CompilationFullDto compilation = compilationRepository.findById(compId)
+        Compilation compilation = compilationRepository.findById(compId)
                 .orElseThrow(() -> new NotFoundException("User with id=" + compId + " was not found",
                         "The required object was not found.",
                         HttpStatus.NOT_FOUND));
         if (updateCompilationRequest.getEvents() != null && updateCompilationRequest.getEvents().size() != 0) {
-            List<EventFullEntity> eventsFromRepository = eventRepository.findAllByIdIn(updateCompilationRequest.getEvents());
+            List<Event> eventsFromRepository = eventRepository.findAllByIdIn(updateCompilationRequest.getEvents());
             compilation.setEvents(eventsFromRepository);
         }
         if (updateCompilationRequest.getPinned() != null) {
@@ -173,7 +173,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public List<EventFullDto> getEvents(List<Long> users, List<String> states, List<Long> categories, String rangeStart, String rangeEnd, PageRequest pageRequest) {
         log.info("Admin: get Events");
-        Iterable<EventFullEntity> eventFullEntities;
+        Iterable<Event> eventFullEntities;
         if (rangeStart != null && rangeEnd != null) {
             eventFullEntities = eventRepository.findEventsAdmin(users, states, categories, LocalDateTime.parse(rangeStart, formatter), LocalDateTime.parse(rangeEnd, formatter), pageRequest);
         } else {
@@ -187,7 +187,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public EventFullDto updateEvent(Long eventId, UpdateEventAdminRequest updateEventAdminRequest) throws ConflictException, ValidationException {
         log.info("Admin: update Event by id {}", eventId);
-        EventFullEntity event = eventRepository.findById(eventId)
+        Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found",
                         "The required object was not found.",
                         HttpStatus.NOT_FOUND));
@@ -229,6 +229,6 @@ public class AdminServiceImpl implements AdminService {
         if (updateEventAdminRequest.getTitle() != null) event.setTitle(updateEventAdminRequest.getTitle());
         locationRepository.save(event.getLocation());
         eventRepository.save(event);
-        return modelMapper.toEventFullDto(eventRepository.save(event));
+        return modelMapper.toEvent(eventRepository.save(event));
     }
 }

@@ -43,10 +43,10 @@ public class PrivateServiceImpl implements PrivateService {
                         HttpStatus.NOT_FOUND));
         if (LocalDateTime.parse(newEventDto.getEventDate(), formatter).isAfter(LocalDateTime.now().plusHours(2))) {
             try {
-                EventFullEntity eventFullEntity = modelMapper.toEventFullDto(userId, newEventDto);
-                locationRepository.save(eventFullEntity.getLocation());
-                EventFullEntity eventFullEntity1 = eventRepository.save(eventFullEntity);
-                return modelMapper.toEventFullDto(eventFullEntity1);
+                Event event = modelMapper.toEvent(userId, newEventDto);
+                locationRepository.save(event.getLocation());
+                Event event1 = eventRepository.save(event);
+                return modelMapper.toEvent(event1);
             } catch (Exception e) {
                 throw new ValidationException(e.getMessage(),
                         "Incorrectly made request.",
@@ -67,7 +67,7 @@ public class PrivateServiceImpl implements PrivateService {
                 .orElseThrow(() -> new NotFoundException("User with id=" + userId + " was not found",
                         "The required object was not found.",
                         HttpStatus.NOT_FOUND));
-        List<EventFullEntity> ev = eventRepository.findEventsByUser(userId, pageRequest).getContent();
+        List<Event> ev = eventRepository.findEventsByUser(userId, pageRequest).getContent();
         return modelMapper.mapToEventShortDto(ev);
     }
 
@@ -75,11 +75,11 @@ public class PrivateServiceImpl implements PrivateService {
     @Override
     public EventFullDto getEventByUser(Long userId, Long eventId) {
         log.info("Private: get Event by User {}", userId);
-        UserDto userDto = userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User with id=" + userId + " was not found",
                         "The required object was not found.",
                         HttpStatus.NOT_FOUND));
-        return modelMapper.toEventFullDto(eventRepository.findByInitiatorAndId(userDto, eventId)
+        return modelMapper.toEvent(eventRepository.findByInitiatorAndId(user, eventId)
                 .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found",
                         "The required object was not found.",
                         HttpStatus.NOT_FOUND)));
@@ -92,7 +92,7 @@ public class PrivateServiceImpl implements PrivateService {
                 .orElseThrow(() -> new NotFoundException("User with id=" + userId + " was not found",
                         "The required object was not found.",
                         HttpStatus.NOT_FOUND));
-        EventFullEntity event = eventRepository.findById(eventId)
+        Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found",
                         "The required object was not found.",
                         HttpStatus.NOT_FOUND));
@@ -134,13 +134,13 @@ public class PrivateServiceImpl implements PrivateService {
         if (updateEventUserRequest.getTitle() != null) event.setTitle(updateEventUserRequest.getTitle());
         eventRepository.save(event);
 
-        return modelMapper.toEventFullDto(eventRepository.findEventByInitiatorAndId(userRepository.getReferenceById(userId), eventId));
+        return modelMapper.toEvent(eventRepository.findEventByInitiatorAndId(userRepository.getReferenceById(userId), eventId));
     }
 
     @Override
-    public ParticipationRequestDto createRequest(Long userId, Long eventId) throws ConflictException {
+    public ParticipationRequest createRequest(Long userId, Long eventId) throws ConflictException {
         log.info("Private: create new Request for Event {} by User {}", eventId, userId);
-        EventFullEntity event = eventRepository.findById(eventId)
+        Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found",
                         "The required object was not found.",
                         HttpStatus.NOT_FOUND));
@@ -172,14 +172,14 @@ public class PrivateServiceImpl implements PrivateService {
             event.setConfirmedRequests(event.getConfirmedRequests() + 1);
             eventRepository.updateRequest(eventId, event.getConfirmedRequests());
             eventRepository.save(event);
-            return participationRequestRepository.save(new ParticipationRequestDto(null, LocalDateTime.now().format(formatter), eventId, userId, Status.CONFIRMED.name()));
+            return participationRequestRepository.save(new ParticipationRequest(null, LocalDateTime.now().format(formatter), eventId, userId, Status.CONFIRMED.name()));
         } else {
-            return participationRequestRepository.save(new ParticipationRequestDto(null, LocalDateTime.now().format(formatter), eventId, userId, State.PENDING.name()));
+            return participationRequestRepository.save(new ParticipationRequest(null, LocalDateTime.now().format(formatter), eventId, userId, State.PENDING.name()));
         }
     }
 
     @Override
-    public List<ParticipationRequestDto> getRequestsByUser(Long userId) {
+    public List<ParticipationRequest> getRequestsByUser(Long userId) {
         log.info("Private: get Requests by User {}", userId);
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User with id=" + userId + " was not found",
@@ -190,7 +190,7 @@ public class PrivateServiceImpl implements PrivateService {
     }
 
     @Override
-    public ParticipationRequestDto updateRequest(Long userId, Long requestId) {
+    public ParticipationRequest updateRequest(Long userId, Long requestId) {
         log.info("Private: update Request {} by User {}", requestId, userId);
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User with id=" + userId + " was not found",
@@ -202,14 +202,14 @@ public class PrivateServiceImpl implements PrivateService {
                         "The required object was not found.",
                         HttpStatus.NOT_FOUND));
 
-        ParticipationRequestDto request = participationRequestRepository.getParticipationRequestDtoByIdAndRequester(requestId, userId);
+        ParticipationRequest request = participationRequestRepository.getParticipationRequestDtoByIdAndRequester(requestId, userId);
         request.setStatus(State.CANCELED.name());
         participationRequestRepository.updateRequest(requestId, userId, State.CANCELED.name());
         return participationRequestRepository.save(request);
     }
 
     @Override
-    public List<ParticipationRequestDto> getRequestsOnEventByUser(Long userId, Long eventId) {
+    public List<ParticipationRequest> getRequestsOnEventByUser(Long userId, Long eventId) {
         log.info("Private: get Request on Event {} by User {}", eventId, userId);
         eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found",
@@ -226,20 +226,20 @@ public class PrivateServiceImpl implements PrivateService {
                         "The required object was not found.",
                         HttpStatus.NOT_FOUND));
 
-        EventFullEntity event = eventRepository.findById(eventId)
+        Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found",
                         "The required object was not found.",
                         HttpStatus.NOT_FOUND));
-        List<ParticipationRequestDto> participationRequestDtoList = participationRequestRepository.findAllByIdIn(eventRequestStatusUpdateRequest.getRequestIds());
-        for (ParticipationRequestDto participationRequestDto : participationRequestDtoList) {
-            if (!Objects.equals(participationRequestDto.getStatus(), State.PENDING.name())) {
+        List<ParticipationRequest> participationRequestList = participationRequestRepository.findAllByIdIn(eventRequestStatusUpdateRequest.getRequestIds());
+        for (ParticipationRequest participationRequest : participationRequestList) {
+            if (!Objects.equals(participationRequest.getStatus(), State.PENDING.name())) {
                 throw new ConflictException("Status is not PENDING", "For the requested operation the conditions are not met.", HttpStatus.CONFLICT);
             }
             if (event.getParticipantLimit() != 0 && event.getConfirmedRequests() >= event.getParticipantLimit()) {
                 throw new ConflictException("The participant limit has been reached", "For the requested operation the conditions are not met.", HttpStatus.CONFLICT);
             }
-            participationRequestRepository.updateRequest(participationRequestDto.getId(), userId, eventRequestStatusUpdateRequest.getStatus().name());
-            participationRequestRepository.save(new ParticipationRequestDto(participationRequestDto.getId(), participationRequestDto.getCreated(), participationRequestDto.getEvent(), participationRequestDto.getRequester(), eventRequestStatusUpdateRequest.getStatus().name()));
+            participationRequestRepository.updateRequest(participationRequest.getId(), userId, eventRequestStatusUpdateRequest.getStatus().name());
+            participationRequestRepository.save(new ParticipationRequest(participationRequest.getId(), participationRequest.getCreated(), participationRequest.getEvent(), participationRequest.getRequester(), eventRequestStatusUpdateRequest.getStatus().name()));
             eventRepository.updateRequest(eventId, event.getConfirmedRequests() + 1);
         }
         return new EventRequestStatusUpdateResult(participationRequestRepository.getParticipationRequestDtosByEventAndStatus(eventId, Status.CONFIRMED.name()), participationRequestRepository.getParticipationRequestDtosByEventAndStatus(eventId, Status.REJECTED.name()));

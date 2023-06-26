@@ -2,7 +2,7 @@ package ru.practicum.ewm.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.ewm.model.CategoryDto;
+import ru.practicum.ewm.model.Category;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -11,7 +11,7 @@ import ru.practicum.ewm.model.CategoryDto;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EventShortDto {
     String annotation;
-    CategoryDto category;
+    Category category;
     Long confirmedRequests;
     String eventDate;
     Long id;

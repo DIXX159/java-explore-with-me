@@ -4,7 +4,7 @@ import org.springframework.data.domain.PageRequest;
 import ru.practicum.ewm.dto.*;
 import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.ValidationException;
-import ru.practicum.ewm.model.ParticipationRequestDto;
+import ru.practicum.ewm.model.ParticipationRequest;
 
 import java.util.List;
 
@@ -18,13 +18,13 @@ public interface PrivateService {
 
     EventFullDto updateEvent(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) throws ConflictException, ValidationException;
 
-    ParticipationRequestDto createRequest(Long userId, Long eventId) throws ConflictException;
+    ParticipationRequest createRequest(Long userId, Long eventId) throws ConflictException;
 
-    List<ParticipationRequestDto> getRequestsByUser(Long userId);
+    List<ParticipationRequest> getRequestsByUser(Long userId);
 
-    ParticipationRequestDto updateRequest(Long userId, Long requestId);
+    ParticipationRequest updateRequest(Long userId, Long requestId);
 
-    List<ParticipationRequestDto> getRequestsOnEventByUser(Long userId, Long eventId);
+    List<ParticipationRequest> getRequestsOnEventByUser(Long userId, Long eventId);
 
     EventRequestStatusUpdateResult updateStatusRequest(Long userId, Long eventId, EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest) throws ConflictException;
 }

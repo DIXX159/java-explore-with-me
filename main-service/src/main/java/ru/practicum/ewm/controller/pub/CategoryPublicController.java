@@ -6,7 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.exception.ValidationException;
-import ru.practicum.ewm.model.CategoryDto;
+import ru.practicum.ewm.model.Category;
 import ru.practicum.ewm.service.PublicService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,16 +23,16 @@ public class CategoryPublicController {
     private final PublicService publicService;
 
     @GetMapping
-    public List<CategoryDto> getEventsByUser(@RequestParam(name = "from", defaultValue = "0") Integer from,
-                                             @RequestParam(name = "size", defaultValue = "10") Integer size,
-                                             HttpServletRequest request) throws ValidationException {
+    public List<Category> getEventsByUser(@RequestParam(name = "from", defaultValue = "0") Integer from,
+                                          @RequestParam(name = "size", defaultValue = "10") Integer size,
+                                          HttpServletRequest request) throws ValidationException {
         log.debug("Получен {} запрос {}", request.getMethod(), request.getRequestURI());
         return publicService.getCategories(PageRequest.of(from, size));
     }
 
     @GetMapping(value = "/{catId}")
-    public CategoryDto getEventByUser(@PathVariable Long catId,
-                                      HttpServletRequest request) throws ValidationException {
+    public Category getEventByUser(@PathVariable Long catId,
+                                   HttpServletRequest request) throws ValidationException {
         log.debug("Получен {} запрос {}", request.getMethod(), request.getRequestURI());
         return publicService.getCategory(catId);
     }

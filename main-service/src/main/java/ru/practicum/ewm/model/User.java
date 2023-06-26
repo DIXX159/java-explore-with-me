@@ -8,15 +8,17 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "category")
 @Getter
 @Setter
+@Table(name = "users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CategoryDto {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     Long id;
+    @Column(name = "email")
+    String email;
     @Column(name = "name")
     String name;
 }

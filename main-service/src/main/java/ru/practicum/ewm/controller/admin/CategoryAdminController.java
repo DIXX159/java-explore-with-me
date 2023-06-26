@@ -7,7 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.dto.NewCategoryDto;
 import ru.practicum.ewm.exception.ConflictException;
-import ru.practicum.ewm.model.CategoryDto;
+import ru.practicum.ewm.model.Category;
 import ru.practicum.ewm.service.AdminService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +26,7 @@ public class CategoryAdminController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public CategoryDto createCategory(@RequestBody @Valid NewCategoryDto newCategoryDto, HttpServletRequest request) throws Exception {
+    public Category createCategory(@RequestBody @Valid NewCategoryDto newCategoryDto, HttpServletRequest request) throws Exception {
         log.debug("Получен {} запрос {} тело запроса: {}", request.getMethod(), request.getRequestURI(), newCategoryDto);
         return adminService.createCategory(newCategoryDto);
     }
@@ -43,7 +43,7 @@ public class CategoryAdminController {
     @PatchMapping(value = "/{catId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public CategoryDto createCategory(@PathVariable Long catId, @RequestBody @Valid NewCategoryDto newCategoryDto, HttpServletRequest request) throws Exception {
+    public Category createCategory(@PathVariable Long catId, @RequestBody @Valid NewCategoryDto newCategoryDto, HttpServletRequest request) throws Exception {
         log.debug("Получен {} запрос {} тело запроса: {}", request.getMethod(), request.getRequestURI(), newCategoryDto);
         return adminService.updateCategory(catId, newCategoryDto);
     }

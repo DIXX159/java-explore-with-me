@@ -39,7 +39,7 @@ public class PublicServiceImpl implements PublicService {
     @Override
     public List<CompilationDto> getCompilations(Boolean pinned, PageRequest pageRequest) {
         log.info("Public: get Compilations by pinned {}", pinned);
-        Page<CompilationFullDto> compilationFullDtoList = compilationRepository.findCompilationFullDtoList(pinned, pageRequest);
+        Page<Compilation> compilationFullDtoList = compilationRepository.findCompilationFullDtoList(pinned, pageRequest);
         return modelMapper.mapToCompilationDto(compilationFullDtoList);
     }
 
@@ -50,7 +50,7 @@ public class PublicServiceImpl implements PublicService {
     }
 
     @Override
-    public List<CategoryDto> getCategories(PageRequest pageRequest) throws ValidationException {
+    public List<Category> getCategories(PageRequest pageRequest) throws ValidationException {
         log.info("Public: get Categories");
         try {
             return categoryRepository.findAll(pageRequest).toList();
@@ -63,7 +63,7 @@ public class PublicServiceImpl implements PublicService {
     }
 
     @Override
-    public CategoryDto getCategory(Long catId) {
+    public Category getCategory(Long catId) {
         log.info("Public: get Category by id {}", catId);
         return categoryRepository.findById(catId).orElseThrow(() -> new NotFoundException("Category with id=" + catId + " was not found",
                 "The required object was not found.",
@@ -73,7 +73,7 @@ public class PublicServiceImpl implements PublicService {
     @Override
     public List<EventShortDto> getFilteredEvents(String text, List<Long> categories, Boolean paid, String rangeStart, String rangeEnd, Boolean onlyAvailable, String sort, PageRequest pageRequest) throws ValidationException {
         log.info("Public: get filtered Events");
-        Page<EventFullEntity> eventFullEntities;
+        Page<Event> eventFullEntities;
         if (Objects.equals(text, "0")) {
             throw new ValidationException("Event must be published",
                     "Incorrectly made request.",
@@ -94,11 +94,11 @@ public class PublicServiceImpl implements PublicService {
                     eventFullEntities = eventRepository.findFiltredEvents(text, categories, paid, null, null, pageRequest.withSort(Sort.by(Sort.Direction.ASC, "eventDate")));
                 }
             }
-            for (EventFullEntity eventFullEntity : eventFullEntities) {
-                ResponseEntity<Object> stats = statClient.getStats(LocalDateTime.now().minusYears(1).format(formatter), LocalDateTime.now().format(formatter), new String[]{"/events/" + eventFullEntity.getId()}, true);
+            for (Event event : eventFullEntities) {
+                ResponseEntity<Object> stats = statClient.getStats(LocalDateTime.now().minusYears(1).format(formatter), LocalDateTime.now().format(formatter), new String[]{"/events/" + event.getId()}, true);
                 String[] body = Objects.requireNonNull(stats.getBody()).toString().split("hits");
                 if (!Objects.equals(body[0], "[]")) {
-                    eventFullEntity.setViews(Long.valueOf(body[1].substring(body[1].indexOf('=') + 1, body[1].indexOf('}'))));
+                    event.setViews(Long.valueOf(body[1].substring(body[1].indexOf('=') + 1, body[1].indexOf('}'))));
                 }
             }
             return modelMapper.mapToEventShortDto(eventFullEntities);
@@ -113,14 +113,14 @@ public class PublicServiceImpl implements PublicService {
     @Override
     public EventFullDto getEventById(Long id) {
         log.info("Public: get Event by id {}", id);
-        EventFullEntity eventFullEntity = eventRepository.findEventFullEntityByIdAndStateLike(id, State.PUBLISHED.name()).orElseThrow(() -> new NotFoundException("Event with id=" + id + " was not found",
+        Event event = eventRepository.findEventFullEntityByIdAndStateLike(id, State.PUBLISHED.name()).orElseThrow(() -> new NotFoundException("Event with id=" + id + " was not found",
                 "The required object was not found.",
                 HttpStatus.NOT_FOUND));
         ResponseEntity<Object> stats = statClient.getStats(LocalDateTime.now().minusYears(1).format(formatter), LocalDateTime.now().format(formatter), new String[]{"/events/" + id}, true);
         String[] body = Objects.requireNonNull(stats.getBody()).toString().split("hits");
         if (!Objects.equals(body[0], "[]")) {
-            eventFullEntity.setViews(Long.valueOf(body[1].substring(body[1].indexOf('=') + 1, body[1].indexOf('}'))));
+            event.setViews(Long.valueOf(body[1].substring(body[1].indexOf('=') + 1, body[1].indexOf('}'))));
         }
-        return modelMapper.toEventFullDto(eventFullEntity);
+        return modelMapper.toEvent(event);
     }
 }

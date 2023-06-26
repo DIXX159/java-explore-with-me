@@ -3,7 +3,7 @@ package ru.practicum.ewm.dto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.ewm.dto.enums.State;
-import ru.practicum.ewm.model.CategoryDto;
+import ru.practicum.ewm.model.Category;
 import ru.practicum.ewm.model.Location;
 
 @NoArgsConstructor
@@ -14,7 +14,7 @@ import ru.practicum.ewm.model.Location;
 public class EventFullDto {
     Long id;
     String annotation;
-    CategoryDto category;
+    Category category;
     Long confirmedRequests;
     String createdOn;
     String description;
