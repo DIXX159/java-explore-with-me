@@ -35,7 +35,7 @@ public interface PrivateService {
 
     Comment updateCommentByUser(Long userId, Long commentId, NewCommentDto newCommentDto);
 
-    List<Comment> getCommentsByEvent(Long eventId);
+    List<Comment> getCommentsByEvent(Long eventId) throws ConflictException;
 
     void deleteComment(Long commentId);
 }

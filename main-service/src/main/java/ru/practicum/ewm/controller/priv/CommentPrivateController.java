@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.dto.NewCommentDto;
+import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.model.Comment;
 import ru.practicum.ewm.service.PrivateService;
 
@@ -44,7 +45,7 @@ public class CommentPrivateController {
 
     @GetMapping(value = "/event/{eventId}")
     public List<Comment> getCommentsByEvent(@PathVariable Long eventId,
-                                            HttpServletRequest request) {
+                                            HttpServletRequest request) throws ConflictException {
         log.debug("Получен {} запрос: {}", request.getMethod(), request.getRequestURI());
         return privateService.getCommentsByEvent(eventId);
     }

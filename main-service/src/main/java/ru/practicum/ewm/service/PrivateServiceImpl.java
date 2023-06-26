@@ -273,13 +273,17 @@ public class PrivateServiceImpl implements PrivateService {
         return commentRepository.findAllByCommentator(userId);
     }
 
-    public List<Comment> getCommentsByEvent(Long eventId) {
+    public List<Comment> getCommentsByEvent(Long eventId) throws ConflictException {
         log.info("Private: get Comments by Event {}", eventId);
-        eventRepository.findById(eventId)
+        Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found",
                         "The required object was not found.",
                         HttpStatus.NOT_FOUND));
-        return commentRepository.findAllByEventIdAndState(eventId, State.PUBLISHED.name());
+        if (Objects.equals(event.getState(), State.PUBLISHED.name())) {
+            return commentRepository.findAllByEventIdAndState(eventId, State.PUBLISHED.name());
+        } else throw new ConflictException("Event state is not PUBLISHED",
+                "For the requested operation the conditions are not met.",
+                HttpStatus.CONFLICT);
     }
 
     @Override

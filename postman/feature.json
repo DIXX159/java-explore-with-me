@@ -8,105 +8,6 @@
 	},
 	"item": [
 		{
-			"name": "(Подготовка) Добавление Категории",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"name\": \"Категория 1\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/admin/categories",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"admin",
-						"categories"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "(Подготовка) Добавление Пользователя",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"email\": \"user1@user1.com\",\r\n  \"name\": \"User1 User1\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/admin/users",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"admin",
-						"users"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "(Подготовка) Добавление События",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"annotation\": \"Аннотация события 1, которой нужно минимум 20 символов\",\r\n    \"category\": 1,\r\n    \"description\": \"Описание события 1, которому нужно минимум 20 символов\",\r\n    \"eventDate\": \"2024-06-27 03:56:51\",\r\n    \"location\": {\r\n        \"lat\": 71.7374,\r\n        \"lon\": -89.6898\r\n    },\r\n    \"paid\": true,\r\n    \"participantLimit\": 732,\r\n    \"requestModeration\": false,\r\n    \"title\": \"Заголовок события 1\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/users/1/events",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"users",
-						"1",
-						"events"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Добавление нового комментария без поля comment",
 			"event": [
 				{
@@ -313,7 +214,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/comments/1/event/11/comment",
+					"raw": "http://localhost:8080/comments/1/event/1111/comment",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -323,7 +224,7 @@
 						"comments",
 						"1",
 						"event",
-						"11",
+						"1111",
 						"comment"
 					]
 				}
@@ -814,7 +715,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/comments/111/comments",
+					"raw": "http://localhost:8080/comments/1111/comments",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -822,7 +723,7 @@
 					"port": "8080",
 					"path": [
 						"comments",
-						"111",
+						"1111",
 						"comments"
 					]
 				}
@@ -950,7 +851,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/comments/event/111",
+					"raw": "http://localhost:8080/comments/event/1111",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -959,7 +860,57 @@
 					"path": [
 						"comments",
 						"event",
-						"111"
+						"1111"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Публикация события",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"annotation\": \"Unde incidunt quia dolorum ipsa quo consequatur. Eos consequatur ipsam omnis veniam minima et. Doloribus praesentium deleniti velit qui omnis voluptas. Excepturi sunt aut labore et possimus.\",\r\n    \"category\": 2,\r\n    \"description\": \"Veritatis voluptate voluptas perspiciatis eius. Quam quia rerum culpa ipsa dolores tempora minus rerum. Aut aliquam qui natus officiis suscipit tempore provident ex. Officiis voluptatibus et vero fugiat maxime nostrum et.\\n \\rDeleniti eum similique maiores tenetur est quis nesciunt autem. Rerum ea dolorem distinctio consequatur molestias aperiam quidem. Autem aut iste distinctio deserunt et. Quos qui magni ea dicta vel.\\n \\rQuo aut atque eligendi et adipisci recusandae et. Quae ex dolores cum qui. Blanditiis at occaecati tempora ea temporibus nesciunt illo et quos. Atque quas cum excepturi magnam consequatur. Quo tenetur placeat commodi. Illo tempora autem reiciendis veniam.\",\r\n    \"eventDate\": \"2023-06-27 06:26:24\",\r\n    \"location\": {\r\n        \"lat\": -42.4205,\r\n        \"lon\": -25.995\r\n    },\r\n    \"paid\": true,\r\n    \"participantLimit\": 225,\r\n    \"requestModeration\": true,\r\n    \"stateAction\": \"PUBLISH_EVENT\",\r\n    \"title\": \"Explicabo cum nostrum eaque.\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/admin/events/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"events",
+						"1"
 					]
 				}
 			},
@@ -1039,6 +990,65 @@
 						"comments",
 						"event",
 						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Получение комментариев по не опубликованному событию",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let serverResponse = pm.response;\r",
+							"\r",
+							"pm.test(\"Ответ должен содержать код статуса 409 и данные в формате json\", function () {\r",
+							"    pm.response.to.have.status(409);  \r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/comments/event/15",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"comments",
+						"event",
+						"15"
 					]
 				}
 			},

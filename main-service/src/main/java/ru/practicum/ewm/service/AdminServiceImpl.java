@@ -229,7 +229,6 @@ public class AdminServiceImpl implements AdminService {
         if (updateEventAdminRequest.getStateAction() == StateAction.REJECT_EVENT) event.setState(State.CANCELED.name());
         if (updateEventAdminRequest.getTitle() != null) event.setTitle(updateEventAdminRequest.getTitle());
         locationRepository.save(event.getLocation());
-        eventRepository.save(event);
         return modelMapper.toEvent(eventRepository.save(event));
     }
 
