@@ -30,6 +30,8 @@ public class PrivateServiceImpl implements PrivateService {
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
     private final ParticipationRequestRepository participationRequestRepository;
+
+    private final CommentRepository commentRepository;
     private final ModelMapper modelMapper;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -243,5 +245,68 @@ public class PrivateServiceImpl implements PrivateService {
             eventRepository.updateRequest(eventId, event.getConfirmedRequests() + 1);
         }
         return new EventRequestStatusUpdateResult(participationRequestRepository.getParticipationRequestDtosByEventAndStatus(eventId, Status.CONFIRMED.name()), participationRequestRepository.getParticipationRequestDtosByEventAndStatus(eventId, Status.REJECTED.name()));
+    }
+
+    @Override
+    public Comment createComment(Long userId, Long eventId, NewCommentDto newCommentDto) {
+        log.info("Private: create Comment for Event {} by User {}", eventId, userId);
+        userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User with id=" + userId + " was not found",
+                        "The required object was not found.",
+                        HttpStatus.NOT_FOUND));
+
+        eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found",
+                        "The required object was not found.",
+                        HttpStatus.NOT_FOUND));
+        Comment entity = modelMapper.toComment(userId, eventId, newCommentDto);
+        return commentRepository.save(entity);
+    }
+
+    @Override
+    public List<Comment> getCommentsByUser(Long userId) {
+        log.info("Private: get Comments by User {}", userId);
+        userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User with id=" + userId + " was not found",
+                        "The required object was not found.",
+                        HttpStatus.NOT_FOUND));
+        return commentRepository.findAllByCommentator(userId);
+    }
+
+    public List<Comment> getCommentsByEvent(Long eventId) throws ConflictException {
+        log.info("Private: get Comments by Event {}", eventId);
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found",
+                        "The required object was not found.",
+                        HttpStatus.NOT_FOUND));
+        if (Objects.equals(event.getState(), State.PUBLISHED.name())) {
+            return commentRepository.findAllByEventIdAndState(eventId, State.PUBLISHED.name());
+        } else throw new ConflictException("Event state is not PUBLISHED",
+                "For the requested operation the conditions are not met.",
+                HttpStatus.CONFLICT);
+    }
+
+    @Override
+    public Comment updateCommentByUser(Long userId, Long commentId, NewCommentDto newCommentDto) {
+        log.info("Private: update Comment {} by User {}", commentId, userId);
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundException("Comment with id=" + commentId + " was not found",
+                        "The required object was not found.",
+                        HttpStatus.NOT_FOUND));
+        comment.setId(commentId);
+        comment.setComment(newCommentDto.getComment());
+        comment.setState(State.PENDING.name());
+        commentRepository.updateComment(commentId, newCommentDto.getComment(), comment.getState());
+        return commentRepository.save(comment);
+    }
+
+    @Override
+    public void deleteComment(Long commentId) {
+        log.info("Private: delete Comment by id {}", commentId);
+        commentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundException("Comment with id=" + commentId + " was not found",
+                        "The required object was not found.",
+                        HttpStatus.NOT_FOUND));
+        commentRepository.deleteById(commentId);
     }
 }

@@ -26,7 +26,6 @@ public class UserAdminController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
     public User createUser(@RequestBody @Valid NewUserRequest newUserRequest, HttpServletRequest request) throws Exception {
         log.debug("Получен {} запрос {} тело запроса: {}", request.getMethod(), request.getRequestURI(), newUserRequest);
         return adminService.createUser(newUserRequest);
@@ -34,7 +33,6 @@ public class UserAdminController {
 
     @DeleteMapping(value = "/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ResponseBody
     public void deleteUser(@PathVariable Long userId,
                            HttpServletRequest request) {
         log.debug("Получен {} запрос {}", request.getMethod(), request.getRequestURI());

@@ -25,7 +25,6 @@ public class CategoryAdminController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
     public Category createCategory(@RequestBody @Valid NewCategoryDto newCategoryDto, HttpServletRequest request) throws Exception {
         log.debug("Получен {} запрос {} тело запроса: {}", request.getMethod(), request.getRequestURI(), newCategoryDto);
         return adminService.createCategory(newCategoryDto);
@@ -33,7 +32,6 @@ public class CategoryAdminController {
 
     @DeleteMapping(value = "/{catId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ResponseBody
     public void deleteCategory(@PathVariable Long catId,
                                HttpServletRequest request) throws ConflictException {
         log.debug("Получен {} запрос {}", request.getMethod(), request.getRequestURI());
@@ -42,7 +40,6 @@ public class CategoryAdminController {
 
     @PatchMapping(value = "/{catId}")
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public Category createCategory(@PathVariable Long catId, @RequestBody @Valid NewCategoryDto newCategoryDto, HttpServletRequest request) throws Exception {
         log.debug("Получен {} запрос {} тело запроса: {}", request.getMethod(), request.getRequestURI(), newCategoryDto);
         return adminService.updateCategory(catId, newCategoryDto);
