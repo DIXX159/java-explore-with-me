@@ -24,7 +24,6 @@ public class RequestPrivateController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
     public ParticipationRequest createEvent(@PathVariable Long userId,
                                             @RequestParam(name = "eventId") Long eventId,
                                             HttpServletRequest request) throws Exception {
@@ -41,7 +40,6 @@ public class RequestPrivateController {
 
     @PatchMapping(value = "/{requestId}/cancel")
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public ParticipationRequest updateEvent(@PathVariable Long userId,
                                             @PathVariable Long requestId,
                                             HttpServletRequest request) {

@@ -28,7 +28,6 @@ public class EventPrivateController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
     public EventFullDto createEvent(@PathVariable Long userId, @RequestBody @Valid NewEventDto newEventDto, HttpServletRequest request) throws Exception {
         log.debug("Получен {} запрос {} тело запроса: {}", request.getMethod(), request.getRequestURI(), newEventDto);
         return privateService.createEvent(userId, newEventDto);
@@ -53,7 +52,6 @@ public class EventPrivateController {
 
     @PatchMapping(value = "/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public EventFullDto updateEvent(@PathVariable Long userId,
                                     @PathVariable Long eventId,
                                     @RequestBody @Valid UpdateEventUserRequest updateEventUserRequest,
@@ -72,7 +70,6 @@ public class EventPrivateController {
 
     @PatchMapping(value = "/{eventId}/requests")
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public EventRequestStatusUpdateResult updateRequest(@PathVariable Long userId,
                                                         @PathVariable Long eventId,
                                                         @RequestBody @Valid EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest,

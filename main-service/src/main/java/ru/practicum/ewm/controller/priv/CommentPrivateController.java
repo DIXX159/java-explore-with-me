@@ -27,7 +27,6 @@ public class CommentPrivateController {
 
     @PostMapping(value = "/{userId}/event/{eventId}/comment")
     @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
     public Comment createComment(@PathVariable Long userId,
                                  @PathVariable Long eventId,
                                  @RequestBody @Valid NewCommentDto newCommentDto,
@@ -52,7 +51,6 @@ public class CommentPrivateController {
 
     @PatchMapping(value = "/{userId}/comment/{commentId}")
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public Comment updateCommentByUser(@PathVariable Long userId,
                                        @PathVariable Long commentId,
                                        @RequestBody @Valid NewCommentDto newCommentDto,
